@@ -1,0 +1,5 @@
+---
+# defaults file for wagtail
+project_name: "first_project"
+project_path: "/home/ubuntu"
+project_user: "ubuntu"

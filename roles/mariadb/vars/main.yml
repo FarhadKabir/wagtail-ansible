@@ -1,0 +1,7 @@
+---
+# vars file for mariadb
+repo_deb: deb [arch=amd64,arm64,ppc64el] https://mirrors.nju.edu.cn/mariadb/repo/10.3/ubuntu
+ansible_distribution_release: focal
+repo_software_package: software-properties-common
+key_url: "https://mariadb.org/mariadb_release_signing_key.asc"
+mariadb_packages: [ mariadb-server, mariadb-common, python3-mysqldb]

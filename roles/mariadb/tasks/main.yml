@@ -1,0 +1,9 @@
+---
+# tasks file for mariadb
+- include: install.yml
+
+- include: configure.yml
+
+- include: databases.yml
+
+- include: users.yml

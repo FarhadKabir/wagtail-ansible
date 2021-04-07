@@ -1,0 +1,29 @@
+---
+- hosts: wagtail
+  become: true
+  gather_facts: no
+  vars:
+    mysql_databases: 
+      - name: wagtail
+    mysql_users:
+      - name: admin123
+        password: admin123
+
+    #ansible_os_family: "Debian"
+    #ansible_distribution: "Ubuntu"
+    #ansible_processor_count: 1
+    #mariadb_admin_password: 'admin123'
+    
+    project_name: "wagtail_demo"
+    wagtail_path: "/opt/{{project_name}}"
+    wagtail_env: "{{ wagtail_path }}/env"
+    wagtail_project_path: "{{ wagtail_path }}/{{project_name}}"
+    wagtail_user: "ubuntu"
+    #project_path: /home/wg/{{ project }}
+    
+  roles:
+    - mariadb
+    - nginx
+    - wagtail
+    #- { role: opencart/opencart, become: no }
+    

@@ -1,0 +1,46 @@
+---
+
+- name: Install uWSGI
+  pip:
+    name: uwsgi
+
+- name: Creates directory for configuration files
+  file: "path=/etc/uwsgi/sites/ state=directory"  # similar to mkdir this creates directory given by project_name
+
+- name: Create uWSGI config
+  become: yes
+  template: src=uwsgi.j2 dest=/etc/uwsgi/sites/{{project_name}}.ini
+  register: wsgi_config
+  notify:
+    - nginx restart
+
+- name: Setup systemd service
+  template:
+    src: uwsgi.service.j2
+    dest: "/etc/systemd/system/uwsgi.service"
+    owner: root
+    group: root
+    mode: 0644
+  register: wsgi_service
+  notify:
+    - nginx restart
+
+- name: Reload systemd because we've just updated a service
+  systemd:
+    name: "uwsgi.service"
+    daemon_reload: yes
+  when: wsgi_service.changed
+
+- name: Ensure that the wsgi service is enabled
+  systemd: 
+    name: "uwsgi.service"
+    enabled: yes
+
+# We can't use a handler for this, because handlers don't work well with dynamic parameters.
+- name: Restart uWSGI service
+  systemd: 
+    name: "uwsgi.service"
+    state: restarted
+  when: wsgi_service.changed or wsgi_config.changed
+  notify:
+    - daemon-reload

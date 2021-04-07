@@ -1,0 +1,73 @@
+---
+
+- name: Copy manage.py
+  become: false
+  template: src=manage.j2 dest={{ wagtail_path }}/{{project_name}}/manage.py
+
+- name: Copy production.py
+  become: false
+  template: src=production.j2 dest={{ wagtail_path }}/{{project_name}}/{{project_name}}/settings/production.py
+
+- name: install wagtail
+  become: false
+  pip:
+    requirements: "{{ wagtail_path }}/{{project_name}}/requirements.txt"
+#    executable: /usr/bin/pip3
+
+
+#- name: Install requirements
+#  become: false
+#  pip: 
+#    requirements: "{{project_path}}/requirements.txt"
+#    #executable: /usr/bin/pip3
+#- name: install requirements
+#  become: false
+#  command: pip3 install -r {{project_path}}/requirements.txt
+  
+
+#- name: copy local.py
+#  template: src=local.j2 dest={{ project_path }}/wagtaildemo/settings/local.py
+#  notify:
+#    - service restart
+
+
+#- name: chown to user
+#  file: path={{project_path}} owner={{project_user}} recurse=yes
+
+- name: migrate db
+  become: false
+  command: "python3 manage.py migrate"
+  register: migration
+  args:
+    chdir: "{{ wagtail_path }}/{{project_name}}"
+
+- name: Check if static folder exists
+  stat:
+    path: "{{ wagtail_project_path }}/{{project_name}}/static"
+  register: static_folder
+
+- name: Collect static files
+  become: false
+  command: "python3 manage.py collectstatic"
+  register: collectstatic
+  args:
+    chdir: "{{ wagtail_path }}/{{project_name}}"
+  when: not static_folder.stat.exists
+
+#- name: initiate db
+#  become: yes
+  #become_user: "{{project_user}}"
+#  django_manage: command=load_initial_data app_path={{project_path}}
+#  when: migration.changed
+
+#- name: update index
+#  become: yes
+#  django_manage: command=update_index app_path={{project_path}}
+
+#- name: update index
+#  become: yes
+#  django_manage: command=collectstatic app_path={{project_path}}
+
+#- name: ensure /var/log/uwsgi exists
+#  file: path=/var/log/uwsgi state=directory
+

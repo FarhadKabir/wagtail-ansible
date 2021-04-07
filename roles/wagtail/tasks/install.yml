@@ -1,0 +1,23 @@
+---
+
+- name: Install required packages
+  package: 
+    name: "{{item}}" 
+    state: "latest"
+    update_cache: yes
+  with_items: "{{ install_wagtail_packages }}"
+
+- name: Create directory for wagtail project 
+  file: "path={{wagtail_path}} state=directory" 
+
+- name: Create virtualenv and install wagtail in it
+  pip: "name=wagtail virtualenv={{wagtail_path}}/env virtualenv_command=virtualenv"
+
+- name: Check if Wagtail project exists
+  stat:
+    path: "{{wagtail_project_path}}"
+  register: project_exists
+
+- name: Start a wagtail project
+  command: "{{wagtail_path}}/env/bin/wagtail start {{project_name}} chdir={{wagtail_path}}/"
+  when: not project_exists.stat.exists

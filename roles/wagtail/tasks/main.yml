@@ -1,0 +1,8 @@
+---
+- include: install.yml
+
+- include: user.yml
+
+- include: configure.yml
+
+- include: uwsgi.yml

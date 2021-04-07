@@ -1,0 +1,45 @@
+---
+# tasks file for nginx
+- name: Install Nginx
+  become: yes
+  apt: 
+    name: nginx
+    state: latest
+    
+- name: start nginx
+  become: yes
+  service:
+    name: nginx
+    state: started
+
+- name: Make sites-available writable
+  become: yes
+  file:
+    path: /etc/nginx/sites-available/
+    mode: '0744'
+    recurse: yes
+    state: directory
+
+- name: Make sites-enabled writable
+  become: yes
+  file:
+    path: /etc/nginx/sites-enabled/
+    mode: '0744'
+    recurse: yes
+    state: directory
+
+- name: Create nginx sites config
+  become: yes
+  template: src=wagtail.conf.j2 dest=/etc/nginx/sites-available/{{ project_name }}.conf
+  notify:
+    - nginx restart
+
+- name: Create symbolic links for sites config to enable sites
+  become: yes
+  file:
+    path: "/etc/nginx/sites-enabled/{{ project_name }}.conf"
+    state: link
+    src: "/etc/nginx/sites-available/{{ project_name }}.conf"
+    force: yes
+  notify:
+    - nginx restart

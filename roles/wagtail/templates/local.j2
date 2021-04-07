@@ -1,0 +1,9 @@
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': '{{psql_db_name}}',
+        'HOST': '{{ hostvars[groups['db'][0]]['ansible_eth0']['ipv4']['address'] }}',
+        'USER': '{{project_user}}',
+        'PASSWORD': '{{project_password}}',
+    }
+}

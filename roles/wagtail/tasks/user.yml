@@ -1,0 +1,9 @@
+---
+
+- name: Ensure that our base project path has proper permissions
+  file:
+    path: "{{ wagtail_path }}"
+    recurse: yes
+    owner: "{{ wagtail_user }}"
+    group: www-data
+    mode: ug=rwx,o=

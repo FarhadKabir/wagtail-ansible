@@ -1,0 +1,5 @@
+---
+- name: daemon-reload
+  command: systemctl daemon-reload
+- name: service-restart
+  service: name=uwsgi state=restarted

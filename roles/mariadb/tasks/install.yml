@@ -1,0 +1,23 @@
+---
+
+- name: Install MariaDB Server
+  apt: 
+    name: "{{repo_software_package}}"
+    state: latest
+    update_cache: yes
+
+- name: Add repository key to the system
+  apt_key: 
+    url: "{{ key_url }}"
+    state: present
+
+- name: Install MariaDB repository
+  apt_repository: 
+    repo: "{{ repo_deb }} {{ ansible_distribution_release }}  main"
+    state: present
+
+- name: Install MariaDB Server for {{ansible_distribution_release}}
+  apt: 
+    name: "{{mariadb_packages}}"
+    state: latest
+    update_cache: yes
