@@ -54,6 +54,14 @@
     chdir: "{{ wagtail_path }}/{{project_name}}"
   when: not static_folder.stat.exists
 
+- name: Collect static files
+  become: false
+  command: "python3 manage.py collectstatic"
+  register: collectstatic
+  args:
+    chdir: "{{ wagtail_path }}/{{project_name}}"
+  when: not static_folder.stat.exists
+
 #- name: initiate db
 #  become: yes
   #become_user: "{{project_user}}"
