@@ -41,18 +41,14 @@
   args:
     chdir: "{{ wagtail_path }}/{{project_name}}"
 
-- name: Check if static folder exists
-  stat:
-    path: "{{ wagtail_project_path }}/{{project_name}}/static"
-  register: static_folder
 
 - name: Collect static files
   become: false
-  command: "python3 manage.py collectstatic"
+  command: "python3 manage.py collectstatic --noinput"
   register: collectstatic
   args:
     chdir: "{{ wagtail_path }}/{{project_name}}"
-  when: not static_folder.stat.exists
+  #when: not static_folder.stat.exists
 
 
 #- name: initiate db

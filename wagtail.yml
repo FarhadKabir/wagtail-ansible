@@ -19,11 +19,9 @@
     wagtail_env: "{{ wagtail_path }}/env"
     wagtail_project_path: "{{ wagtail_path }}/{{project_name}}"
     wagtail_user: "ubuntu"
-    #project_path: /home/wg/{{ project }}
     
   roles:
     - mariadb
     - nginx
     - wagtail
-    #- { role: opencart/opencart, become: no }
     
